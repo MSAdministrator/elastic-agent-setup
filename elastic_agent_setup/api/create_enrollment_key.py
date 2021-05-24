@@ -4,7 +4,7 @@ from ..core import Core, Settings
 class CreateEnrollmentKey(Core):
 
     method = 'POST'
-    endpoint = '/api/fleet/setup'
+    endpoint = '/api/fleet/enrollment-api-keys'
     host = Settings.kibana
     kwargs = {
         'json': {
@@ -14,6 +14,7 @@ class CreateEnrollmentKey(Core):
     }
 
     def __init__(self, policy_id):
+        super().__init__()
         self.kwargs['json']['policy_id'] = policy_id
 
     def parse_response(self, response):

@@ -10,7 +10,9 @@ class Download(Core):
     }
 
     def parse_response(self, response):
-        with open(Settings.download_endpoint, 'wb') as f:
+        self.__logger.debug('Saving file to download path: {}'.format(Settings.download_path))
+        with open(Settings.download_path, 'wb+') as f:
             for chunk in response.raw.stream(1024, decode_content=False):
                 if chunk:
                     f.write(chunk)
+        self.__logger.debug('File saved successfully')

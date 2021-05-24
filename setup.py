@@ -23,6 +23,9 @@ setup(
     author='MSAdministrator',
     author_email='rickardja@live.com',
     python_requires='>=3.6, <4',
+    package_data={
+        'elastic_agent_setup':  ['data/logging.yml']
+    },
     entry_points={
           'console_scripts': [
               'elastic-agent-setup = elastic_agent_setup.__main__:main'

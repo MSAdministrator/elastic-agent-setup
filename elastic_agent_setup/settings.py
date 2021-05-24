@@ -1,6 +1,6 @@
 import os
 import platform
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 from .utils.exceptions import IncorrectPath
 import struct
 
@@ -9,10 +9,11 @@ class SettingsProperties(type):
 
     def __uri_validator(self, uri):
         try:
-            result = urlparse(uri)
-            return all([result.scheme, result.netloc, result.path])
+            url = urlparse(uri)
+            if url.scheme and url.netloc:
+                return urlunparse(url._replace(path=''))
         except:
-            return False
+            raise Exception('Unable to validate the provider URI: {}'.format(uri))
 
     @property
     def elasticsearch(cls):
@@ -61,6 +62,10 @@ class SettingsProperties(type):
         if hasattr(self, 'platform'):
             endpoint = self.VERSION_MAP[self.platform.lower()][str(bitness)]
             return endpoint.format(version=self.version)
+
+    @property
+    def download_path(cls):
+        return os.path.join('/', cls.download_endpoint)
 
     @property
     def certificate_authority(cls):
@@ -136,7 +141,7 @@ class Settings(object, metaclass=SettingsProperties):
             '32': 'elastic-agent-{version}-windows-x86.zip'
         },
         'linux': {
-            '64': 'elastic-agent-{version}-linux-arm64.tar.gz',
+            '64': 'elastic-agent-{version}-linux-x86_64.tar.gz',
             '32': 'elastic-agent-{version}-linux-x86.tar.gz'
         }
     }
